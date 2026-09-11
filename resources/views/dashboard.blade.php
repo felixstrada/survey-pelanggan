@@ -1,68 +1,112 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard Survei Pelanggan') }}
-        </h2>
-    </x-slot>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{{ asset('evaluation.png') }}">
+    <title>Dashboard Hasil Survei</title>
+    <!-- CDN Bootstrap 5 untuk memastikan styling tabel langsung keluar -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
-            <!-- Cards Ringkasan -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div class="bg-white p-6 rounded-lg shadow-sm">
-                    <h3 class="text-gray-500 text-sm">Total Responden</h3>
-                    <p class="text-3xl font-bold mt-2">{{ $totalSurvey }}</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-sm">
-                    <h3 class="text-gray-500 text-sm">Rata-Rata Rating</h3>
-                    <p class="text-3xl font-bold mt-2 text-yellow-500">
-                        ★ {{ number_format($averageRating, 1) }} / 5
-                    </p>
+    <div class="container py-5">
+        <!-- logo harddeck -->
+        <div class="text-left mb-3">
+            <img src="{{ asset('images/logo harddeck.png') }}" alt="Logo Perusahaan" class="img-fluid" style="max-height: 50px;">
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">Dashboard Hasil Survei Pelanggan</h2>
+        </div>
+
+        <!-- Kartu Ringkasan -->
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+                <div class="card border-0 shadow-sm p-3 bg-white">
+                    <h6 class="text-muted fw-bold">Total Survei Masuk</h6>
+                    <h3 class="fw-bold text-primary mb-0">{{ $totalSurvey ?? 0 }}</h3>
                 </div>
             </div>
+            <div class="col-md-6 mb-3">
+                <div class="card border-0 shadow-sm p-3 bg-white">
+                    <h6 class="text-muted fw-bold">Rata-rata Rating</h6>
+                    <h3 class="fw-bold text-warning mb-0">★ {{ number_format($avgRating ?? 0, 1) }}</h3>
+                </div>
+            </div>
+        </div>
 
-            <!-- Tabel Data Survei -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold mb-4">Daftar Hasil Survei</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b bg-gray-50">
-                                <th class="p-3">Tanggal</th>
-                                <th class="p-3">Nama</th>
-                                <th class="p-3">WhatsApp</th>
-                                <th class="p-3">Email</th>
-                                <th class="p-3">Sosial Media</th>
-                                <th class="p-3">Rating</th>
-                                <th class="p-3">Masukan & Saran</th>
+        <!-- Tabel Utama -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold">Daftar Hasil Survei</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="ps-3">No</th>
+                                <th>Nama Lengkap</th>
+                                <th>Kontak WhatsApp</th>
+                                <th>Email</th>
+                                <th>Sosial Media</th>
+                                <th>Rating</th>
+                                <th>Masukan / Saran</th>
+                                <th>Tanggal Kirim</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($surveys as $survey)
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="p-3 text-sm">{{ $survey->created_at->format('d M Y H:i') }}</td>
-                                    <td class="p-3 font-medium">{{ $survey->nama_lengkap }}</td>
-                                    <td class="p-3">{{ $survey->no_whatsapp }}</td>
-                                    <td class="p-3">{{ $survey->email }}</td>
-                                    <td class="p-3">{{ $survey->sosialmedia }}</td>
-                                    <td class="p-3 text-yellow-500">★ {{ $survey->rating }}</td>
-                                    <td class="p-3 text-sm text-gray-600">{{ $survey->masukan_saran ?? '-' }}</td>
-                                </tr>
-                            @empty
+                            @if(isset($surveys) && count($surveys) > 0)
+                                @foreach($surveys as $index => $survey)
+                                    <tr>
+                                        <td class="ps-3 fw-bold">{{ $surveys->firstItem() + $index }}</td>
+                                        <td>{{ $survey->nama_lengkap ?? '-' }}</td>
+                                        <td>{{ $survey->no_whatsapp ?? '-' }}</td>
+                                        <td>{{ $survey->email ?? '-' }}</td>
+                                        <td>{{ $survey->sosialmedia ?? '-' }}</td>
+                                        <td>
+                                            <span class="badge bg-warning text-dark">
+                                                ★ {{ $survey->rating ?? 0 }}
+                                            </span>
+                                        </td>
+                                        <td>{{ $survey->masukan_saran ?? '-' }}</td>
+                                        <td class="small text-muted">
+                                            {{ $survey->created_at ? $survey->created_at->format('d/m/Y H:i') : '-' }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
                                 <tr>
-                                    <td colspan="6" class="p-4 text-center text-gray-500">Belum ada data survei.</td>
+                                    <td colspan="8" class="text-center py-4 text-muted">
+                                        Data tabel belum tersedia atau $surveys kosong.
+                                    </td>
                                 </tr>
-                            @endforelse
+                            @endif
                         </tbody>
                     </table>
                 </div>
-
-                <div class="mt-4">
+            </div>
+            @if(isset($surveys) && $surveys->hasPages())
+                <div class="card-footer bg-white py-3">
                     {{ $surveys->links() }}
                 </div>
-            </div>
-
+            @endif
         </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; margin-bottom: 1rem;">
+    <!-- Tombol Export PDF (Kiri) -->
+    <div>
+        <a href="{{ route('survey.export.pdf') }}" class="btn btn-primary">Export PDF</a>
     </div>
-</x-app-layout>
+
+    <!-- Tombol Logout (Kanan) -->
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button type="submit" style="background-color: #811010; color: white; padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer;">
+            Logout
+        </button>
+    </form>
+    </div>
+    </div>
+</body>
+</html>

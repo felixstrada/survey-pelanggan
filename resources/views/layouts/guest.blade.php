@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <link rel="icon" type="image/png" href="{{ asset('evaluation.png') }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,7 +19,7 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
             <div>
                 <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                    <img src="{{ asset('images/logo harddeck.png') }}" alt="Logo" class="img-fluid" style="max-height: 50px;">
                 </a>
             </div>
 
